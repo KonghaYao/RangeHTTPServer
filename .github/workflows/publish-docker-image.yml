@@ -31,4 +31,4 @@ jobs:
               with:
                   context: .
                   push: true
-                  tags: ghcr.io/${{ github.repository }}:${{ inputs.version }}
+                  tags: ghcr.io/range-http-server:${{ inputs.version }}
