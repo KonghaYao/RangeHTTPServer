@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Player</title>
+        <link
+            rel="stylesheet"
+            href="https:/unpkg.com/xgplayer/dist/index.min.css"
+        />
+    </head>
+    <body>
+        <div id="my-video-container"></div>
+
+        <!--引入js-->
+        <script src="https://unpkg.com/xgplayer/dist/index.min.js"></script>
+        <script src="https://unpkg.com/xgplayer-mp4/dist/index.min.js"></script>
+        <script>
+            new window.Player({
+                url: new URLSearchParams(location.search).get("url"),
+                id: "my-video-container",
+                autoplay: true,
+                height: window.innerHeight,
+                width: window.innerWidth,
+                plugins: [window.Mp4Plugin],
+                mp4plugin: {
+                    maxBufferLength: 30,
+                    minBufferLength: 10,
+                    reqOptions: {
+                        mode: "cors",
+                        method: "GET",
+                        headers: {},
+                    },
+                },
+            });
+        </script>
+    </body>
+</html>

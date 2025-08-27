@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            body {
+                font-family: sans-serif;
+                margin: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                max-width: 800px;
+                margin: 20px auto;
+            }
+            a {
+                padding: 10px 15px;
+                border: 1px solid #eee;
+                border-radius: 5px;
+                text-decoration: none;
+                color: #333;
+                background-color: #f9f9f9;
+                transition: background-color 0.2s ease;
+            }
+            a:hover {
+                background-color: #e9e9e9;
+            }
+            a.directory {
+                font-weight: bold;
+                background-color: #e6f7ff;
+            }
+            a.directory:hover {
+                background-color: #bae7ff;
+            }
+        </style>
+    </head>
+    <body></body>
+    <script>
+        const body = document.body;
+
+        function renderContent() {
+            body.innerHTML = ""; // Clear previous content
+            const path = (location.hash || "#/").slice(1);
+            fetch(path)
+                .then((res) => res.text())
+                .then((data) => {
+                    // data 是一个 html，请你解析body
+                    const parser = new DOMParser();
+                    const innerBody = parser.parseFromString(
+                        data,
+                        "text/html"
+                    ).body;
+
+                    const map = innerBody.querySelectorAll("a");
+                    [...map]
+                        .map((i) => {
+                            if (i.href.endsWith("/")) {
+                                return {
+                                    dir: true,
+                                    file: new URL(i.href).pathname,
+                                    name: i.innerText,
+                                };
+                            } else {
+                                return {
+                                    dir: false,
+                                    file: new URL(i.href).pathname,
+                                    name: i.innerText,
+                                };
+                            }
+                        })
+                        .sort((i) => (!i.dir ? 1 : -1))
+                        .map((i) => {
+                            // 渲染到 body
+                            const a = document.createElement("a");
+                            const realpath = new URL(
+                                path + i.file.slice(1),
+                                location.href
+                            ).pathname;
+                            if (i.dir) {
+                                const url = new URL("#" + realpath, location);
+                                a.href = url;
+                                a.textContent = i.name;
+                                a.classList.add("directory");
+                            } else {
+                                a.href = realpath;
+                                a.textContent = i.name;
+                                if (
+                                    [".mp4", ".mp3", ".jpg", ".png"].some(
+                                        (end) => realpath.endsWith(end)
+                                    )
+                                ) {
+                                    a.href =
+                                        "/video-player.html?url=" +
+                                        encodeURIComponent(realpath);
+                                }
+                            }
+                            body.appendChild(a);
+                        });
+                });
+        }
+
+        // Initial render
+        renderContent();
+
+        // Listen for hash changes
+        window.addEventListener("hashchange", renderContent);
+    </script>
+</html>
