@@ -13,4 +13,4 @@ COPY main.py /app/main.py
 EXPOSE 8000
 
 # 运行命令
-CMD ["python", "main.py","8000"]
+CMD ["python", "main.py", "8000"]
