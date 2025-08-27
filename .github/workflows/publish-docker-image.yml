@@ -10,7 +10,7 @@ on:
 
 jobs:
     build-and-push-to-ghcr:
-        runs-on: ubuntu-latest
+        runs-on: macos-latest
         permissions:
             contents: read
             packages: write
@@ -30,6 +30,5 @@ jobs:
               uses: docker/build-push-action@v5
               with:
                   context: .
-                  platforms: linux/amd64
                   push: true
                   tags: ghcr.io/${{ inputs.version }}
